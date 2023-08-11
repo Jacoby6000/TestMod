@@ -16,10 +16,10 @@ jobs:
           REPO="${{ github.event.repository.full_name }}"
         
           # Fetch the release details for the given tag
-          RELEASE_DETAILS=$(gh release view "$TAG" --repo="$REPO" --json assets,publishedAt,draft)
+          RELEASE_DETAILS=$(gh release view "$TAG" --repo="$REPO" --json assets,publishedAt,isDraft)
           
           # Check if the release is a draft
-          IS_DRAFT=$(echo "$RELEASE_DETAILS" | jq -r '.draft')
+          IS_DRAFT=$(echo "$RELEASE_DETAILS" | jq -r '.isDraft')
           
           # Extract the published date
           PUBLISHED_AT=$(echo "$RELEASE_DETAILS" | jq -r '.publishedAt')
