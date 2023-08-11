@@ -47,3 +47,4 @@ jobs:
               "repo_url": "${{ github.event.repository.html_url }}",
               "release_tag": "${{ github.event.release.tag_name }}"
             }
+            ```
