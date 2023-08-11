@@ -2,8 +2,6 @@ name: Create issue to register release
 on:
   release:
     types: 
-      - published
-      - created
       - edited
       - prereleased
       - released
