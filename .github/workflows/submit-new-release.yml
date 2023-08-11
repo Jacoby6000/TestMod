@@ -3,6 +3,7 @@ on:
   release:
     types: 
       - published
+      - edited
 
 jobs:
   create-new-release-issue:
@@ -11,19 +12,36 @@ jobs:
       - name: Check for pak
         id: pak-check
         run: |
-          ASSETS=$(gh release view "${{ github.event.release.tag_name }}" --repo="${{ github.event.repository.full_name }}" --json assets -q ".assets[].name")
-
+          TAG="${{ github.event.release.tag_name }}" -
+          REPO="${{ github.event.repository.full_name }}"
+        
+          # Fetch the release details for the given tag
+          RELEASE_DETAILS=$(gh release view "$TAG" --repo="$REPO" --json assets,published_at,draft)
+          
+          # Check if the release is a draft
+          IS_DRAFT=$(echo "$RELEASE_DETAILS" | jq -r '.draft')
+          
+          # Extract the published date
+          PUBLISHED_AT=$(echo "$RELEASE_DETAILS" | jq -r '.published_at')
+          
           # Check if any asset has a ".pak" extension
-          contains_pak_file=false
+          ASSETS=$(echo "$RELEASE_DETAILS" | jq -r '.assets[].name')
+          should_register=false
           for asset in $ASSETS; do
               if [[ $asset == *".pak"* ]]; then
-                  contains_pak_file=true
+                  should_register=true
                   break
               fi
           done
           
           # Print the result
-          echo "should_continue=$contains_pak_file" >> $GITHUB_OUTPUT  
+          if [ "$IS_DRAFT" = "true" ]; then
+              should_register=false
+          elif [ -z "$PUBLISHED_AT" ]; then
+              should_register=false
+          fi
+
+          echo "should_continue=$should_register" >> $GITHUB_OUTPUT  
         env:
           GH_TOKEN: ${{ github.token }}
           
