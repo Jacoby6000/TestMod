@@ -1,0 +1,47 @@
+name: Create issue to register release
+on:
+  release:
+    types: 
+      - published
+      - created
+      - edited
+      - prereleased
+      - released
+
+jobs:
+  create-new-release-issue:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check for pak
+        id: pak-check
+        run: |
+          ASSETS=$(gh release view "${{ github.event.release.tag_name }}" --repo="${{ github.event.repository.full_name }}" --json assets -q ".assets[].name")
+
+          # Check if any asset has a ".pak" extension
+          contains_pak_file=false
+          for asset in $ASSETS; do
+              if [[ $asset == *".pak"* ]]; then
+                  contains_pak_file=true
+                  break
+              fi
+          done
+          
+          # Print the result
+          echo "should_continue=$contains_pak_file" >> $GITHUB_OUTPUT
+          
+      - name: create an issue
+        uses: dacbd/create-issue-action@main
+        if: steps.pak-check.outputs.should_continue == 'true'
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          owner: Chiv2-Community
+          repo: C2ModRegistry
+          title: Version ${{ github.event.release.tag_name }} released for ${{ github.event.repository.full_name }}
+          body: |
+            A new release has been created for `${{ github.event.repository.full_name }}` by `${{ github.actor }}`
+
+            ```json
+            {
+              "repo_url": "${{ github.event.repository.html_url }}",
+              "release_tag": "${{ github.event.release.tag_name }}"
+            }
