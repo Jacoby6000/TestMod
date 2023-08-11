@@ -12,7 +12,7 @@ jobs:
       - name: Check for pak
         id: pak-check
         run: |
-          TAG="${{ github.event.release.tag_name }}" -
+          TAG="${{ github.event.release.tag_name }}"
           REPO="${{ github.event.repository.full_name }}"
         
           # Fetch the release details for the given tag
