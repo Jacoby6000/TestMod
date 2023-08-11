@@ -2,9 +2,7 @@ name: Create issue to register release
 on:
   release:
     types: 
-      - edited
-      - prereleased
-      - released
+      - published
 
 jobs:
   create-new-release-issue:
