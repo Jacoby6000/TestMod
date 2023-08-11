@@ -27,7 +27,9 @@ jobs:
           done
           
           # Print the result
-          echo "should_continue=$contains_pak_file" >> $GITHUB_OUTPUT
+          echo "should_continue=$contains_pak_file" >> $GITHUB_OUTPUT  
+        env:
+          GH_TOKEN: ${{ github.token }}
           
       - name: create an issue
         uses: dacbd/create-issue-action@main
