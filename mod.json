@@ -1,5 +1,6 @@
 {
   "name": "TestMod",
+  "description": "A test mod for the registry",
   "mod_type": "Shared",
   "authors": [ "DrLong" ],
   "dependencies": [
