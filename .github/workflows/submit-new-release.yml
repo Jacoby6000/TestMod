@@ -35,7 +35,7 @@ jobs:
         uses: dacbd/create-issue-action@main
         if: steps.pak-check.outputs.should_continue == 'true'
         with:
-          token: ${{ secrets.GITHUB_TOKEN }}
+          token: ${{ secrets.CHIVALRY_2_UNCHAINED_RELEASE_BOT_TOKEN }}
           owner: Chiv2-Community
           repo: C2ModRegistry
           title: Version ${{ github.event.release.tag_name }} released for ${{ github.event.repository.full_name }}
